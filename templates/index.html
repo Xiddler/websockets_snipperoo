@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Snipperoo</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <link rel="stylesheet" href="static/css/style.css">
+</head>
+
+<body>
+
+<script type="text/javascript">
+$(document).ready(function() {
+// var socket = io.connect('http://127.0.0.1:5000'); // orig
+var socket = io.connect('http://192.168.11.101:5000'); // for use with other lan devices! # Broghill
+// var socket = io.connect('http://192.168.1.2:5000'); // for use with other lan devices! # Balmurry
+    socket.on('connect', function() {
+        socket.send('A user has reconnected... ');
+    });
+
+    socket.on('message', function(msg) {
+        $("#messages").append('<br><li>'+msg+'</li>');
+    });
+
+
+    $('#sendbutton').on('click', function() {
+        socket.send($('#myMessage').val());                  // original
+        $('#myMessage').val('');                             // original
+    });
+    
+    $('#clearbutton').on('click', function() {
+        socket.send($(location.reload()));
+    });
+
+});
+</script>
+<div class="container">
+<textarea name="message" placeholder="Enter snippet here..." id="myMessage" rows="10" cols="24"> </textarea>
+    <hr>
+    
+    <button id="sendbutton" >Submit</button>
+    <br>
+    <button id="clearbutton" >Clear</button>
+    <br/>
+    <br/>
+    <ul id="messages">
+    {% for msg in messages %}
+    <br>
+    <li>    {{ msg }} </li>
+    {% endfor %}
+    </ul>
+</div>
+</body>
+</html>
